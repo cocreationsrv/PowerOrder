@@ -1,0 +1,67 @@
+<template>
+    <lightning-card title="Shopping Cart" icon-name="standard:orders">
+        <div class="slds-p-around_medium">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th scope="col">
+                            <div class="slds-truncate">
+                                <input type="checkbox" onchange={handleSelectAll} disabled={isCartEmpty} />
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Product Image" >Product Image</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Product Name">Product Name</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Unit Price">Unit Price</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Quantity">Quantity</div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={products} for:item="product">
+                        <tr key={product.Id} class="slds-hint-parent">
+                            <td>
+                                <input type="checkbox" name={product.Id} checked={product.isSelected}
+                                    onchange={handleSelection} />
+                            </td>
+                            <td>
+                                <img lwc:if={product.PictureURL} src={product.PictureURL} class="product-image" alt="product.ProductName__c" />
+                            </td>
+                            <td>
+                                <p>{product.ProductName__c}</p>
+                            </td>
+                            <td>
+                                <p>${product.UnitPrice}</p>
+                            </td>
+                            <td>
+                                <lightning-input type="number" name={product.Id} label="Quantity"
+                                    value={product.Quantity__c} onchange={handleQuantityChange} variant="label-hidden"
+                                    min="1"></lightning-input>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <div class="slds-m-top_medium slds-grid slds-gutters">
+                <div class="slds-col">
+                    <lightning-button label="Delete Selected" onclick={handleDeleteSelected} variant="destructive"
+                        icon-name="utility:delete" class="slds-m-top_small">
+                    </lightning-button>
+                </div>
+                <div class="slds-col slds-text-align_right">
+                    <p class="slds-text-title slds-m-bottom_xx-small">Total Price</p>
+                    <p class="slds-text-heading_medium">{totalPrice}</p>
+                    <lightning-button label="Checkout" onclick={handleCheckout} variant="brand"
+                        class="slds-m-top_small">
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>
