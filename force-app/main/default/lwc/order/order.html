@@ -1,14 +1,30 @@
 <template>
-    <lightning-card title="Order Details" icon-name="standard:orders">
-        <div class="slds-p-around_medium">
-            <p>Here are the selected products:</p>
-            <template for:each={selectedProducts} for:item="product">
-                <div key={product.Id}>
-                    <p>{product.ProductName__c} (Quantity: {product.Quantity__c})</p>
-                    <img src={product.PictureURL} alt={product.ProductName__c} class="product-image"  />
-                </div>
-            </template>
-            <lightning-button label="Confirm Order" onclick={handleConfirmOrder} class="slds-m-top_medium"></lightning-button>
+    <lightning-card title="Step Form" icon-name="custom:custom67">
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-m-bottom_medium">
+            <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+                <lightning-progress-step label="Step 1" value="1"></lightning-progress-step>
+                <lightning-progress-step label="Step 2" value="2"></lightning-progress-step>
+                <lightning-progress-step label="Step 3" value="3"></lightning-progress-step>
+            </lightning-progress-indicator>
+        </div>
+        <template if:true={isStep1}>
+            <div class="slds-p-around_medium">
+                <!-- Blank Step 1 -->
+            </div>
+        </template>
+        <template if:true={isStep2}>
+            <div class="slds-p-around_medium">
+                <lightning-input type="date" label="Select a date" value={selectedDate} onchange={handleDateChange}></lightning-input>
+            </div>
+        </template>
+        <template if:true={isStep3}>
+            <div class="slds-p-around_medium">
+                <p>Selected Date: {selectedDate}</p>
+            </div>
+        </template>
+        <div class="slds-p-around_medium slds-grid slds-grid_align-end">
+            <lightning-button label="Previous" variant="neutral" onclick={handlePrevious} disabled={isStep1}></lightning-button>
+            <lightning-button label="Next" variant="brand" onclick={handleNext} disabled={isStep3}></lightning-button>
         </div>
     </lightning-card>
 </template>

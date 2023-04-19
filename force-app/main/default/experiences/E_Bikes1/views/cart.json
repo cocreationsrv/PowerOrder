@@ -1,0 +1,68 @@
+{
+  "appPageId" : "591ae89d-97d7-4f5d-b93f-ce618e5d48f1",
+  "componentName" : "siteforce:dynamicLayout",
+  "dataProviders" : [ ],
+  "id" : "d6f5819f-4ec5-4e48-827a-99ce1ab493d2",
+  "label" : "Cart",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "45bbe7ed-df57-48c6-a0e4-1155b866dc56",
+          "columns" : [ {
+            "UUID" : "78abab2a-1925-41cd-b666-622481ccde34",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "45bbe7ed-df57-48c6-a0e4-1155b866dc56",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:shoppingCart",
+          "id" : "9d01d8a8-0005-4fad-bf53-5c1c1c43e165",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "78abab2a-1925-41cd-b666-622481ccde34",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c8e8ccda-0bd1-4339-989d-c336011139ea",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Cart"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "049a406b-c688-4c71-905f-1345aa5cd374",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "93666b01-381f-49be-8a15-e8903c8cb8c0",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-cart"
+}

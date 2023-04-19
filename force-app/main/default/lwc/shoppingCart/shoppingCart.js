@@ -40,7 +40,7 @@ export default class ShoppingCart extends LightningElement {
     refreshProducts() {
         getProducts()
             .then(data => {
-                this.products = data.map(product => ({ ...product,PictureURL: product.PictureURL__c, isSelected: false }));
+                this.products = data.map(product => ({ ...product, PictureURL: product.PictureURL__c, isSelected: false }));
             })
             .catch(error => {
                 this.showErrorToast('Error Fetching Products', error.body.message);
@@ -50,7 +50,8 @@ export default class ShoppingCart extends LightningElement {
     @wire(getProducts)
     wiredProducts({ error, data }) {
         if (data) {
-            this.products = data.map(product => ({ ...product,PictureURL: product.PictureURL__c,isSelected: false,UnitPrice: parseFloat((product.MSRP__c * product.Quantity__c).toFixed(2))
+            this.products = data.map(product => ({
+                ...product, PictureURL: product.PictureURL__c, isSelected: false,rowClass: 'slds-hint-parent'
             }));
         } else if (error) {
             this.showErrorToast('Error Fetching Products', error.body.message);
@@ -96,6 +97,7 @@ export default class ShoppingCart extends LightningElement {
         this.products.forEach(product => {
             if (product.Id === selectedId) {
                 product.isSelected = !product.isSelected;
+                product.rowClass = product.isSelected ? 'slds-hint-parent selected-row' : 'slds-hint-parent';
             }
         });
         this.updateSelectAllCheckboxState();

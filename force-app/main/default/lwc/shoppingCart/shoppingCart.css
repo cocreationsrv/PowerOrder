@@ -1,35 +1,44 @@
-.slds-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 .5rem;
+/* shoppingCart.css */
+.checkbox-column {
+  width: 2.5rem;
+  text-align: center;
 }
 
-.slds-table th {
-  text-align: left;
-  padding: .5rem;
-  font-size: 1rem;
-  font-weight: bold;
+.image-column {
+  width: 10rem;
 }
 
-.slds-table td {
-  padding: .5rem;
-  font-size: .875rem;
-  vertical-align: middle;
+.name-column {
+  width: 40%;
 }
 
-.slds-input {
-  width: 100%;
+.name-column-text1{
+  font-size: 0.85rem;
 }
 
-.slds-button {
-  margin-top: 1rem;
+.name-column-text2{
+  font-size: 0.7rem;
 }
 
-.slds-grid {
-  align-items: center;
+.price-column {
+  width: 15rem;
+}
+
+.quantity-column {
+  width: 10rem;
 }
 
 .product-image {
-  max-height: 3rem;
-  width: auto;
+  max-width: 100%;
+  max-height: 12rem;
+  object-fit: cover;
+}
+
+.selected-row {
+  background-color: #e1f5fe;
+}
+
+
+table {
+  font-size: 0.875rem; /* Adjust text size */
 }

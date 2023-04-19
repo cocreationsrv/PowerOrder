@@ -1,22 +1,23 @@
+<!-- shoppingCart.html -->
 <template>
     <lightning-card title="Shopping Cart" icon-name="standard:orders">
         <div class="slds-p-around_medium">
             <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th scope="col">
+                        <th scope="col" class="checkbox-column">
                             <div class="slds-truncate">
                                 <input type="checkbox" onchange={handleSelectAll} disabled={isCartEmpty} />
                             </div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate" title="Product Image" >Product Image</div>
+                            <div class="slds-truncate" title="Product Image">Select ALL</div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate" title="Product Name">Product Name</div>
+                            <div class="slds-truncate" title="Product Name"></div>
                         </th>
                         <th scope="col">
-                            <div class="slds-truncate" title="Unit Price">Unit Price</div>
+                            <div class="slds-truncate" title="Unit Price">Price</div>
                         </th>
                         <th scope="col">
                             <div class="slds-truncate" title="Quantity">Quantity</div>
@@ -25,21 +26,26 @@
                 </thead>
                 <tbody>
                     <template for:each={products} for:item="product">
-                        <tr key={product.Id} class="slds-hint-parent">
-                            <td>
+                        <tr key={product.Id} class={product.rowClass}>
+                            <td class="checkbox-column">
                                 <input type="checkbox" name={product.Id} checked={product.isSelected}
                                     onchange={handleSelection} />
                             </td>
-                            <td>
-                                <img lwc:if={product.PictureURL} src={product.PictureURL} class="product-image" alt="product.ProductName__c" />
+                            <td class="image-column">
+                                <img lwc:if={product.PictureURL} src={product.PictureURL} class="product-image" alt={product.ProductName__c} />
                             </td>
-                            <td>
+                            <td class="name-column">
                                 <p>{product.ProductName__c}</p>
+                                <span class="name-column-text1">Scent:</span>
+                                <span class="name-column-text2">Citrus</span>
+                                <p></p>
+                                <span class="name-column-text1">Manufacturer:</span>
+                                <span class="name-column-text2">Estimated</span>
                             </td>
-                            <td>
-                                <p>${product.UnitPrice}</p>
+                            <td class="price-column">
+                                <p>${product.MSRP__c}</p>
                             </td>
-                            <td>
+                            <td class="quantity-column">
                                 <lightning-input type="number" name={product.Id} label="Quantity"
                                     value={product.Quantity__c} onchange={handleQuantityChange} variant="label-hidden"
                                     min="1"></lightning-input>

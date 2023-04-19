@@ -7,6 +7,8 @@ import CHECKOUT_MESSAGE_CHANNEL from '@salesforce/messageChannel/CheckoutMessage
 export default class Order extends LightningElement {
     selectedProducts;
     @track selectedProducts0 = [];
+    @track currentStep = 1;
+    @track selectedDate;
     @wire(MessageContext) messageContext;
 
     subscription;
@@ -70,5 +72,36 @@ export default class Order extends LightningElement {
                     }),
                 );
             });
+    }
+
+
+    
+
+    get isStep1() {
+        return this.currentStep === '1';
+    }
+
+    get isStep2() {
+        return this.currentStep === '2';
+    }
+
+    get isStep3() {
+        return this.currentStep === '3';
+    }
+
+    handlePrevious() {
+        if (this.currentStep > '1') {
+            this.currentStep = (parseInt(this.currentStep) - 1).toString();
+        }
+    }
+
+    handleNext() {
+        if (this.currentStep < '3') {
+            this.currentStep = (parseInt(this.currentStep) + 1).toString();
+        }
+    }
+
+    handleDateChange(event) {
+        this.selectedDate = event.target.value;
     }
 }

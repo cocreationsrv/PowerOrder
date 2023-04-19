@@ -1,13 +1,11 @@
 <template>
-    <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
-        class="slds-var-m-bottom_small"></lightning-button>
     <lightning-card icon-name="standard:apex_plugin">
         <template lwc:if={recordId}>
             <span slot="title">{productName}</span>
             <lightning-button-icon icon-name="utility:expand_alt" slot="actions"
                 onclick={handleNavigateToRecord}><label>Open Record</label></lightning-button-icon>
-            <lightning-button-icon icon-name="utility:cart" slot="actions" onclick={handleAddToCart}><label>
-                    Add to Cart</label></lightning-button-icon>
+            <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
+                class="slds-var-m-bottom_small"></lightning-button>
             <div class="slds-var-m-horizontal_medium">
                 <img lwc:if={productPictureUrl} src={productPictureUrl} class="product" alt="Product picture" />
                 <lightning-record-view-form record-id={recordId} onload={handleRecordLoaded}

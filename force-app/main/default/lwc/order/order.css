@@ -1,3 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.slds-progress {
+  pointer-events: none;
+}
+
+.slds-progress__step {
+  cursor: default;
+}
+
+.slds-progress-indicator__step {
+  font-size: 0.875rem; /* 14px */
+}
+
+.slds-progress-indicator__step-label {
+  font-size: 0.75rem; /* 12px */
+}
+
+.slds-grid_align-end > :not(:first-child) {
+  margin-left: 0.5rem; /* 8px */
+}
+
 .product-image {
     max-height: 3rem;
     width: auto;
