@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Order Details" icon-name="standard:orders">
+        <div class="slds-p-around_medium">
+            <p>Here are the selected products:</p>
+            <template for:each={selectedProducts} for:item="product">
+                <div key={product.Id}>
+                    <p>{product.ProductName__c} (Quantity: {product.Quantity__c})</p>
+                    <img src={product.PictureURL} alt={product.ProductName__c} class="product-image"  />
+                </div>
+            </template>
+            <lightning-button label="Confirm Order" onclick={handleConfirmOrder} class="slds-m-top_medium"></lightning-button>
+        </div>
+    </lightning-card>
+</template>

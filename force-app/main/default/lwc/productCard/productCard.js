@@ -2,11 +2,14 @@ import { LightningElement, wire } from 'lwc';
 
 // Lightning Message Service and a message channel
 import { NavigationMixin } from 'lightning/navigation';
-import { subscribe, MessageContext } from 'lightning/messageService';
+import { publish, subscribe, MessageContext } from 'lightning/messageService';
 import PRODUCT_SELECTED_MESSAGE from '@salesforce/messageChannel/ProductSelected__c';
+import SHOPPING_CART_UPDATE_CHANNEL from '@salesforce/messageChannel/ShoppingCartUpdate__c';
 
 // Utils to extract field values
 import { getFieldValue } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import addToCart from '@salesforce/apex/ShoppingCartController.addToCart';
 
 // Product__c Schema
 import PRODUCT_OBJECT from '@salesforce/schema/Product__c';
@@ -85,5 +88,30 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
                 actionName: 'view'
             }
         });
+    }
+
+    handleAddToCart() {
+        addToCart({ productId: this.recordId })
+            .then((result) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Product added to cart',
+                        variant: 'success'
+                    })
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error adding product to cart',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+            publish(this.messageContext, SHOPPING_CART_UPDATE_CHANNEL, {
+                message: 'Product added to cart0'
+            });
     }
 }
