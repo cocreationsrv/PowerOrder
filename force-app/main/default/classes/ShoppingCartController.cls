@@ -16,6 +16,12 @@ public with sharing class ShoppingCartController {
     }
 
     @AuraEnabled
+    public static void deleteSelectedProducts(List<Id> productIds) {
+        List<ShoppingCart__c> productsToDelete = [SELECT Id FROM ShoppingCart__c WHERE Id IN :productIds];
+        delete productsToDelete;
+    }
+
+    @AuraEnabled
     public static void addToCart(String productId) {
         // Check if the product ID is provided
         if (String.isBlank(productId)) {

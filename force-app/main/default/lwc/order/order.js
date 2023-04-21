@@ -1,4 +1,4 @@
-import { LightningElement, wire, track  } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { subscribe, publish, unsubscribe, MessageContext } from 'lightning/messageService';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import createOrder from '@salesforce/apex/OrderController.createOrder';
@@ -8,7 +8,7 @@ import CHECKOUT_MESSAGE_CHANNEL from '@salesforce/messageChannel/CheckoutMessage
 import getProducts from '@salesforce/apex/ShoppingCartController.getProducts';
 import deleteProducts from '@salesforce/apex/ShoppingCartController.deleteProducts';
 import updateProductQuantity from '@salesforce/apex/ShoppingCartController.updateProductQuantity';
-
+import deleteSelectedProducts from '@salesforce/apex/ShoppingCartController.deleteSelectedProducts';
 import SHOPPING_CART_UPDATE_CHANNEL from '@salesforce/messageChannel/ShoppingCartUpdate__c';
 
 const DELAY = 800;
@@ -66,7 +66,7 @@ export default class Order extends LightningElement {
     wiredProducts({ error, data }) {
         if (data) {
             this.products = data.map(product => ({
-                ...product, PictureURL: product.PictureURL__c, isSelected: false,rowClass: 'slds-hint-parent'
+                ...product, PictureURL: product.PictureURL__c, isSelected: false, rowClass: 'slds-hint-parent'
             }));
         } else if (error) {
             this.showErrorToast('Error Fetching Products', error.body.message);
@@ -195,7 +195,7 @@ export default class Order extends LightningElement {
                 this.messageContext,
                 CHECKOUT_MESSAGE_CHANNEL,
                 (message) => this.handleMessage(message)
-                
+
             );
         }
     }
@@ -207,7 +207,7 @@ export default class Order extends LightningElement {
 
     handleMessage(message) {
         this.selectedProducts = message.selectedProducts;
-        console.log(message.selectedProducts,999);
+        console.log(message.selectedProducts, 999);
     }
 
     handleConfirmOrder() {
@@ -220,7 +220,7 @@ export default class Order extends LightningElement {
                 PictureURL: product.PictureURL
             };
         });
-        
+
         createOrder({ products: productsAsMap })
             .then(result => {
                 this.dispatchEvent(
@@ -243,7 +243,34 @@ export default class Order extends LightningElement {
     }
 
 
-    
+    submitOrder() {
+        const productIds = this.products.filter(p => p.isSelected).map(p => p.Id);
+
+        deleteSelectedProducts({ productIds: productIds })
+            .then(() => {
+                this.products = this.products.filter(p => !p.isSelected);
+                this.currentStep = '1';
+                this.updateStepStatus();
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Order submitted and selected products deleted',
+                        variant: 'success',
+                    }),
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: error.body.message,
+                        variant: 'error',
+                    }),
+                );
+            });
+    }
+
+
 
     get isStep1() {
         return this.currentStep === '1';
@@ -259,7 +286,7 @@ export default class Order extends LightningElement {
 
     get isNextDisabled() {
         // Disable the "Next" button if no date is selected in step 2 or it's step 3.
-        return (this.isStep2 && !this.selectedDate) || this.isStep3;
+        return (this.isStep2 && !this.selectedDate);
     }
 
     connectedCallback() {
@@ -274,8 +301,11 @@ export default class Order extends LightningElement {
     }
 
     handleNext() {
-        if (this.currentStep < '3') {
+        if (this.isStep3) {
+            this.submitOrder();
+        } else {
             this.currentStep = (parseInt(this.currentStep) + 1).toString();
+            this.updateStepStatus();
         }
     }
 
