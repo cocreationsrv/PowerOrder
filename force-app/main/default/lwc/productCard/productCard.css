@@ -9,3 +9,36 @@ section {
     margin-top: 0.75rem;
     text-transform: uppercase;
 }
+
+/* myComponent.css */
+.add-to-cart-button {
+    background-color: transparent;
+    color: #111;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 1rem 2rem;
+    border-radius: 0.1875rem;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.add-to-cart-button:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+    cursor: pointer;
+}
+
+.add-to-cart-button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 0.125rem rgba(17, 17, 17, 0.4);
+}
+
+.add-to-cart-button .slds-button__icon {
+    height: 1rem;
+    width: 1rem;
+    margin-right: 0.25rem;
+    fill: #111;
+}
+
+.msrp-value {
+    color: red;
+}

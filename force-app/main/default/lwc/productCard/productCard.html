@@ -4,16 +4,22 @@
             <span slot="title">{productName}</span>
             <lightning-button-icon icon-name="utility:expand_alt" slot="actions"
                 onclick={handleNavigateToRecord}><label>Open Record</label></lightning-button-icon>
-            <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
-                class="slds-var-m-bottom_small"></lightning-button>
+
             <div class="slds-var-m-horizontal_medium">
                 <img lwc:if={productPictureUrl} src={productPictureUrl} class="product" alt="Product picture" />
+                <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
+                    class="add-to-cart-button slds-var-m-bottom_small"></lightning-button>
                 <lightning-record-view-form record-id={recordId} onload={handleRecordLoaded}
                     object-api-name="Product__c" density="compact">
                     <lightning-output-field field-name={categoryField}></lightning-output-field>
                     <lightning-output-field field-name={levelField}></lightning-output-field>
-                    <lightning-output-field field-name={msrpField}></lightning-output-field>
-
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <span class="slds-form-element__label">MSRP</span>
+                        <div class="slds-form-element__control">
+                            <lightning-formatted-text class="slds-text-heading_small msrp-value"
+                                value={formattedMSRP}></lightning-formatted-text>
+                        </div>
+                    </div>
                     <section>Electric Components</section>
                     <lightning-output-field field-name={batteryField}></lightning-output-field>
                     <lightning-output-field field-name={chargerField}></lightning-output-field>
@@ -38,6 +44,8 @@
                         </div>
                     </div>
                 </lightning-record-view-form>
+                <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
+                    class="add-to-cart-button slds-var-m-bottom_small"></lightning-button>
             </div>
         </template>
 

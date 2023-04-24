@@ -41,7 +41,7 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
     forkField = FOPK_FIELD;
     frontBrakesField = FRONT_BRAKES_FIELD;
     rearBrakesField = REAR_BRAKES_FIELD;
-
+    productMSRP;
     // Id of Product__c to display
     recordId;
 
@@ -69,6 +69,20 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
         const recordData = records[this.recordId];
         this.productName = getFieldValue(recordData, NAME_FIELD);
         this.productPictureUrl = getFieldValue(recordData, PICTURE_URL_FIELD);
+        this.productMSRP = getFieldValue(recordData, MSRP_FIELD);
+    }
+
+    get formattedMSRP() {
+        if (this.productMSRP) {
+            // Format the currency based on user's locale
+            return new Intl.NumberFormat(undefined, {
+                style: 'currency',
+                currency: 'USD', // Replace with the appropriate currency code
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(this.productMSRP);
+        }
+        return '';
     }
 
     /**
@@ -110,8 +124,10 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
                     })
                 );
             });
-            publish(this.messageContext, SHOPPING_CART_UPDATE_CHANNEL, {
-                message: 'Product added to cart0'
-            });
+        publish(this.messageContext, SHOPPING_CART_UPDATE_CHANNEL, {
+            message: 'Product added to cart0'
+        });
     }
+
+
 }

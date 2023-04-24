@@ -40,7 +40,7 @@
                                             onchange={handleSelection} />
                                     </td>
                                     <td class="image-column">
-                                        <img lwc:if={product.PictureURL} src={product.PictureURL} class="product-image"
+                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c} class="product-image"
                                             alt={product.ProductName__c} />
                                     </td>
                                     <td class="name-column">
@@ -52,7 +52,12 @@
                                         <span class="name-column-text2">Estimated</span>
                                     </td>
                                     <td class="price-column">
-                                        <p>${product.MSRP__c}</p>
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <div class="slds-form-element__control">
+                                                <lightning-formatted-text class="slds-text-heading_small msrp-value"
+                                                    value={product.productMSRP}></lightning-formatted-text>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="quantity-column">
                                         <lightning-input type="number" name={product.Id} label="Quantity"
@@ -66,7 +71,7 @@
                     <div class="slds-m-top_medium slds-grid slds-gutters">
                         <div class="slds-col">
                             <lightning-button label="Delete Selected" onclick={handleDeleteSelected}
-                                variant="destructive" icon-name="utility:delete" class="slds-m-top_small">
+                                variant="destructive" icon-name="utility:delete" class="slds-m-top_small" disabled={isButtonDisabled}>
                             </lightning-button>
                         </div>
                         <div class="slds-col slds-text-align_right">
@@ -114,7 +119,7 @@
                             <template for:each={selectedProducts} for:item="product">
                                 <tr key={product.Id} class={product.rowClass}>
                                     <td class="image-column">
-                                        <img lwc:if={product.PictureURL} src={product.PictureURL} class="product-image"
+                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c} class="product-image"
                                             alt={product.ProductName__c} />
                                     </td>
                                     <td class="name-column">
@@ -127,6 +132,7 @@
                                     </td>
                                     <td class="price-column">
                                         <p>${product.MSRP__c}</p>
+                                        <lightning-formatted-text class="slds-text-heading_small msrp-value" value={product.formattedMSRP}></lightning-formatted-text>
                                     </td>
                                     <td class="quantity-column">
                                         <p>{product.Quantity__c}</p>
@@ -141,7 +147,7 @@
         <div class="slds-p-around_medium slds-grid slds-grid_align-end">
             <lightning-button label="Previous" variant="neutral" onclick={handlePrevious}
                 disabled={isStep1}></lightning-button>
-            <lightning-button label="Next" variant="brand" onclick={handleNext}
+            <lightning-button label="nextButtonLabel" variant="brand" onclick={handleNext}
                 disabled={isNextDisabled}></lightning-button>
         </div>
     </lightning-card>

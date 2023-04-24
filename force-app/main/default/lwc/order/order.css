@@ -4,6 +4,8 @@
   height: 100%;
 }
 
+
+
 .slds-progress {
   pointer-events: none;
 }
@@ -66,4 +68,8 @@
 
 table {
   font-size: 0.875rem; /* Adjust text size */
+}
+
+.msrp-value {
+  color: red;
 }

@@ -30,10 +30,10 @@ export default class Order extends LightningElement {
     @track selectedProducts = [];
 
     @wire(MessageContext) messageContext;
-
+    anyItemSelected = false;
     shoppingCartUpdateSubscription;
     delayTimeout;
-    PictureURL__c;
+    productMSRP;
     get isCartEmpty() {
         return this.products.length === 0;
     }
@@ -55,7 +55,14 @@ export default class Order extends LightningElement {
     refreshProducts() {
         getProducts()
             .then(data => {
-                this.products = data.map(product => ({ ...product, PictureURL: product.PictureURL__c, isSelected: false }));
+                this.products = data.map(product => ({
+                    ...product, productMSRP: Intl.NumberFormat(undefined, {
+                        style: 'currency',
+                        currency: 'USD', // Replace with the appropriate currency code
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(product.MSRP__c), isSelected: false
+                }));
             })
             .catch(error => {
                 this.showErrorToast('Error Fetching Products', error.body.message);
@@ -66,7 +73,12 @@ export default class Order extends LightningElement {
     wiredProducts({ error, data }) {
         if (data) {
             this.products = data.map(product => ({
-                ...product, PictureURL: product.PictureURL__c, isSelected: false, rowClass: 'slds-hint-parent'
+                ...product, productMSRP: Intl.NumberFormat(undefined, {
+                    style: 'currency',
+                    currency: 'USD', // Replace with the appropriate currency code
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(product.MSRP__c), isSelected: false, rowClass: 'slds-hint-parent'
             }));
         } else if (error) {
             this.showErrorToast('Error Fetching Products', error.body.message);
@@ -82,12 +94,18 @@ export default class Order extends LightningElement {
                 rowClass: isSelected ? 'slds-hint-parent selected-row' : 'slds-hint-parent',
             };
         });
+        this.anyItemSelected = isSelected;
         if (this.selectAllCheckbox.indeterminate) {
             this.selectAllCheckbox.indeterminate = false;
         }
         this.selectedProducts = this.products.filter(product => product.isSelected);
         this.totalPrice = this.selectedProducts.reduce((total, product) => total + (product.MSRP__c * product.Quantity__c), 0);
-        this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
+        this.totalPrice = Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: 'USD', // Replace with the appropriate currency code
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(parseFloat(this.totalPrice.toFixed(2)));
     }
 
     updateSelectAllCheckboxState() {
@@ -117,9 +135,15 @@ export default class Order extends LightningElement {
             }
         });
         this.updateSelectAllCheckboxState();
+        this.anyItemSelected = this.products.some((product) => product.isSelected);
         this.selectedProducts = this.products.filter(product => product.isSelected);
         this.totalPrice = this.selectedProducts.reduce((total, product) => total + (product.MSRP__c * product.Quantity__c), 0);
-        this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
+        this.totalPrice = Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: 'USD', // Replace with the appropriate currency code
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(parseFloat(this.totalPrice.toFixed(2)));
     }
 
     handleDeleteSelected() {
@@ -128,6 +152,7 @@ export default class Order extends LightningElement {
             .then(() => {
                 this.products = this.products.filter(product => !idsToDelete.includes(product.Id));
                 this.selectedProducts = [];
+                this.anyItemSelected = false;
                 this.totalPrice = 0;
                 this.showSuccessToast('Success', 'Selected products have been deleted.');
             })
@@ -140,7 +165,12 @@ export default class Order extends LightningElement {
         const updatedItem = this.products.find(product => product.Id === event.target.name);
         updatedItem.Quantity__c = event.target.value;
         this.totalPrice = this.selectedProducts.reduce((total, product) => total + (product.MSRP__c * product.Quantity__c), 0);
-        this.totalPrice = parseFloat(this.totalPrice.toFixed(2));
+        this.totalPrice = Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: 'USD', // Replace with the appropriate currency code
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(parseFloat(this.totalPrice.toFixed(2)));
         this.delayedFireFilterChangeEvent(updatedItem);
     }
 
@@ -215,7 +245,12 @@ export default class Order extends LightningElement {
             return {
                 ProductId: product.ProductId,
                 ProductName__c: product.ProductName__c,
-                ProductPrice__c: product.ProductPrice__c,
+                ProductPrice__c: Intl.NumberFormat(undefined, {
+                    style: 'currency',
+                    currency: 'USD', // Replace with the appropriate currency code
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(product.ProductPrice__c),
                 Quantity__c: product.Quantity__c,
                 PictureURL: product.PictureURL
             };
@@ -270,7 +305,9 @@ export default class Order extends LightningElement {
             });
     }
 
-
+    get isButtonDisabled() {
+        return !this.anyItemSelected;
+    }
 
     get isStep1() {
         return this.currentStep === '1';
@@ -286,7 +323,11 @@ export default class Order extends LightningElement {
 
     get isNextDisabled() {
         // Disable the "Next" button if no date is selected in step 2 or it's step 3.
-        return (this.isStep2 && !this.selectedDate);
+        return (this.isStep2 && !this.selectedDate) || !this.anyItemSelected;
+    }
+
+    get nextButtonLabel() {
+        return this.isStep1 ? 'Checkout' : 'Next';
     }
 
     connectedCallback() {
