@@ -44,6 +44,11 @@
                         </div>
                     </div>
                 </lightning-record-view-form>
+                <lightning-card title="Rich Text Display">
+                    <div class="slds-m-around_medium">
+                        <lightning-formatted-rich-text value={richTextValue}></lightning-formatted-rich-text>
+                    </div>
+                </lightning-card>
                 <lightning-button label="Add to Cart" icon-name="utility:cart" onclick={handleAddToCart}
                     class="add-to-cart-button slds-var-m-bottom_small"></lightning-button>
             </div>

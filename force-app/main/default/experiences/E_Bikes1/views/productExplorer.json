@@ -1,6 +1,6 @@
 {
   "appPageId" : "591ae89d-97d7-4f5d-b93f-ce618e5d48f1",
-  "componentName" : "siteforce:sldsThreeCol363Layout",
+  "componentName" : "siteforce:sldsTwoCol48Layout",
   "dataProviders" : [ ],
   "id" : "3f05e628-072b-4e52-b235-ca04100be399",
   "label" : "Product Explorer",
@@ -16,12 +16,7 @@
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
-    } ],
-    "id" : "4013f167-79df-4679-b3e3-8821de46bad1",
-    "regionName" : "sidebar",
-    "type" : "region"
-  }, {
-    "components" : [ {
+    }, {
       "componentAttributes" : {
         "searchBarIsVisible" : false,
         "tilesAreDraggable" : false
@@ -32,8 +27,8 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "d4dc54f2-fbf6-4ac3-821c-d40ce504c885",
-    "regionName" : "content",
+    "id" : "4013f167-79df-4679-b3e3-8821de46bad1",
+    "regionName" : "sidebar",
     "type" : "region"
   }, {
     "components" : [ {
@@ -44,6 +39,10 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
+    "id" : "d4dc54f2-fbf6-4ac3-821c-d40ce504c885",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
     "id" : "c49cd6fe-e137-4f30-82fc-27904ef0d6c7",
     "regionName" : "sidebarAlt",
     "type" : "region"

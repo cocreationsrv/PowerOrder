@@ -43,6 +43,10 @@
                 <behavior>Edit</behavior>
                 <field>Handlebar_Color__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>HTML__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

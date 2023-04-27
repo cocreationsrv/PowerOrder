@@ -6,3 +6,8 @@ section > h1 {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+.selection-components {
+    display: flex;
+    justify-content: space-between;
+}

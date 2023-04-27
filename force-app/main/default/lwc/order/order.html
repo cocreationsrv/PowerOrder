@@ -25,10 +25,13 @@
                                     <div class="slds-truncate" title="Product Name"></div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate" title="Unit Price">Price</div>
+                                    <div class="slds-truncate" title="Price">Price</div>
                                 </th>
                                 <th scope="col">
                                     <div class="slds-truncate" title="Quantity">Quantity</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Subtotal">Subtotal</div>
                                 </th>
                             </tr>
                         </thead>
@@ -40,8 +43,8 @@
                                             onchange={handleSelection} />
                                     </td>
                                     <td class="image-column">
-                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c} class="product-image"
-                                            alt={product.ProductName__c} />
+                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c}
+                                            class="product-image" alt={product.ProductName__c} />
                                     </td>
                                     <td class="name-column">
                                         <p>{product.ProductName__c}</p>
@@ -52,17 +55,16 @@
                                         <span class="name-column-text2">Estimated</span>
                                     </td>
                                     <td class="price-column">
-                                        <div class="slds-form-element slds-form-element_horizontal">
-                                            <div class="slds-form-element__control">
-                                                <lightning-formatted-text class="slds-text-heading_small msrp-value"
-                                                    value={product.productMSRP}></lightning-formatted-text>
-                                            </div>
-                                        </div>
+                                        <lightning-formatted-text class="slds-text-heading_small"
+                                            value={product.productMSRP}></lightning-formatted-text>
                                     </td>
                                     <td class="quantity-column">
                                         <lightning-input type="number" name={product.Id} label="Quantity"
                                             value={product.Quantity__c} onchange={handleQuantityChange}
                                             variant="label-hidden" min="1"></lightning-input>
+                                    </td>
+                                    <td class="subtotal-column">
+                                        <p>{product.subtotal}</p>
                                     </td>
                                 </tr>
                             </template>
@@ -70,26 +72,76 @@
                     </table>
                     <div class="slds-m-top_medium slds-grid slds-gutters">
                         <div class="slds-col">
-                            <lightning-button label="Delete Selected" onclick={handleDeleteSelected}
-                                variant="destructive" icon-name="utility:delete" class="slds-m-top_small" disabled={isButtonDisabled}>
+                            <lightning-button label="Delete Selected" onclick={showConfirmationDialog} variant="neutral"
+                                icon-name="utility:delete" class="slds-m-top_small" disabled={isButtonDisabled}>
                             </lightning-button>
                         </div>
                         <div class="slds-col slds-text-align_right">
                             <p class="slds-text-title slds-m-bottom_xx-small">Total Price</p>
                             <p class="slds-text-heading_medium">{totalPrice}</p>
-                            <lightning-button label="Checkout" onclick={handleCheckout} variant="brand"
-                                class="slds-m-top_small">
-                            </lightning-button>
                         </div>
                     </div>
                 </div>
             </lightning-card>
+            <template if:true={showDialog}>
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <h2 class="slds-text-heading_medium">Confirm Deletion</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <p>Are you sure you want to delete?</p>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <lightning-button variant="neutral" label="Cancel" onclick={closeConfirmationDialog}
+                                class="slds-m-right_small"></lightning-button>
+                            <lightning-button variant="brand" label="OK"
+                                onclick={handleDeleteSelected}></lightning-button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
         </template>
         <template if:true={isStep2}>
             <lightning-card title="Shopping Cart" icon-name="utility:cart">
-                <div class="slds-p-around_medium">
-                    <lightning-input type="date" label="Select a date" value={selectedDate}
-                        onchange={handleDateChange}></lightning-input>
+                <div class="slds-p-around_medium centered-content">
+                    <div class="input-field-container">
+                        <label for="selected-date">Select a date:</label>
+                        <lightning-input type="date" name="selected-date" label="Select a date" value={selectedDate}
+                            onchange={handleDateChange} class="step2-input-field">
+                        </lightning-input>
+                    </div>
+                    <div class="input-field-container">
+                        <label for="street-address">Street Address:</label>
+                        <lightning-input type="text" name="street-address" value={streetAddress}
+                            onchange={handleStreetAddressChange} class="step2-input-field">
+                        </lightning-input>
+                    </div>
+                    <div class="input-field-container">
+                        <label for="city">City:</label>
+                        <lightning-input type="text" name="city" value={city} onchange={handleCityChange}
+                            class="step2-input-field">
+                        </lightning-input>
+                    </div>
+                    <div class="input-field-container">
+                        <label for="state">State/Province:</label>
+                        <lightning-input type="text" name="state" value={state} onchange={handleStateChange}
+                            class="step2-input-field">
+                        </lightning-input>
+                    </div>
+                    <div class="input-field-container">
+                        <label for="postal-code">Postal Code:</label>
+                        <lightning-input type="text" name="postal-code" value={postalCode}
+                            onchange={handlePostalCodeChange} class="step2-input-field">
+                        </lightning-input>
+                    </div>
+                    <div class="input-field-container">
+                        <label for="country">Country:</label>
+                        <lightning-input type="text" name="country" value={country} onchange={handleCountryChange}
+                            class="step2-input-field">
+                        </lightning-input>
+                    </div>
                 </div>
             </lightning-card>
         </template>
@@ -108,10 +160,13 @@
                                     <div class="slds-truncate" title="Product Name">Product Name</div>
                                 </th>
                                 <th scope="col">
-                                    <div class="slds-truncate" title="Unit Price">Price</div>
+                                    <div class="slds-truncate" title="Price">Price</div>
                                 </th>
                                 <th scope="col">
                                     <div class="slds-truncate" title="Quantity">Quantity</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Subtotal">Subtotal</div>
                                 </th>
                             </tr>
                         </thead>
@@ -119,8 +174,8 @@
                             <template for:each={selectedProducts} for:item="product">
                                 <tr key={product.Id} class={product.rowClass}>
                                     <td class="image-column">
-                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c} class="product-image"
-                                            alt={product.ProductName__c} />
+                                        <img lwc:if={product.PictureURL__c} src={product.PictureURL__c}
+                                            class="product-image" alt={product.ProductName__c} />
                                     </td>
                                     <td class="name-column">
                                         <p>{product.ProductName__c}</p>
@@ -131,23 +186,32 @@
                                         <span class="name-column-text2">Estimated</span>
                                     </td>
                                     <td class="price-column">
-                                        <p>${product.MSRP__c}</p>
-                                        <lightning-formatted-text class="slds-text-heading_small msrp-value" value={product.formattedMSRP}></lightning-formatted-text>
+                                        <lightning-formatted-text class="slds-text-heading_small"
+                                            value={product.productMSRP}></lightning-formatted-text>
                                     </td>
                                     <td class="quantity-column">
-                                        <p>{product.Quantity__c}</p>
+                                        <lightning-input type="number" name={product.Id} label="Quantity"
+                                            value={product.Quantity__c} disabled
+                                            variant="label-hidden" min="1"></lightning-input>
+                                    </td>
+                                    <td class="subtotal-column">
+                                        <p>{product.subtotal}</p>
                                     </td>
                                 </tr>
                             </template>
                         </tbody>
                     </table>
+                    <div class="slds-col slds-text-align_right">
+                        <p class="slds-text-title slds-m-bottom_xx-small">Total Price</p>
+                        <p class="slds-text-heading_medium">{totalPrice}</p>
+                    </div>
                 </div>
             </lightning-card>
         </template>
         <div class="slds-p-around_medium slds-grid slds-grid_align-end">
-            <lightning-button label="Previous" variant="neutral" onclick={handlePrevious}
-                disabled={isStep1}></lightning-button>
-            <lightning-button label="nextButtonLabel" variant="brand" onclick={handleNext}
+            <lightning-button label="Previous" variant="neutral" onclick={handlePrevious} disabled={isStep1}
+                if:false={isStep1}></lightning-button>
+            <lightning-button label={nextButtonLabel} variant="brand" onclick={handleNext}
                 disabled={isNextDisabled}></lightning-button>
         </div>
     </lightning-card>

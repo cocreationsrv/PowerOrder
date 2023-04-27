@@ -22,13 +22,17 @@ export default class Order extends LightningElement {
     @track currentStep = 1;
     @track selectedDate;
     @wire(MessageContext) messageContext;
-
+    street = '';
+    city = '';
+    state = '';
+    zipCode = '';
+    country = '';
     subscription;
 
     @track products = [];
     @track totalPrice = 0;
     @track selectedProducts = [];
-
+    @track showDialog = false;
     @wire(MessageContext) messageContext;
     anyItemSelected = false;
     shoppingCartUpdateSubscription;
@@ -36,6 +40,34 @@ export default class Order extends LightningElement {
     productMSRP;
     get isCartEmpty() {
         return this.products.length === 0;
+    }
+
+    showConfirmationDialog() {
+        this.showDialog = true;
+    }
+
+    closeConfirmationDialog() {
+        this.showDialog = false;
+    }
+
+    handleStreetChange(event) {
+        this.street = event.target.value;
+    }
+
+    handleCityChange(event) {
+        this.city = event.target.value;
+    }
+
+    handleStateChange(event) {
+        this.state = event.target.value;
+    }
+
+    handleZipCodeChange(event) {
+        this.zipCode = event.target.value;
+    }
+
+    handleCountryChange(event) {
+        this.country = event.target.value;
     }
 
     connectedCallback() {
@@ -61,7 +93,14 @@ export default class Order extends LightningElement {
                         currency: 'USD', // Replace with the appropriate currency code
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 0
-                    }).format(product.MSRP__c), isSelected: false
+                    }).format(product.MSRP__c), 
+                    subtotal: Intl.NumberFormat(undefined, {
+                        style: 'currency',
+                        currency: 'USD', // Replace with the appropriate currency code
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(product.MSRP__c * product.Quantity__c),
+                    isSelected: false
                 }));
             })
             .catch(error => {
@@ -78,7 +117,15 @@ export default class Order extends LightningElement {
                     currency: 'USD', // Replace with the appropriate currency code
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 0
-                }).format(product.MSRP__c), isSelected: false, rowClass: 'slds-hint-parent'
+                }).format(product.MSRP__c),
+                subtotal: Intl.NumberFormat(undefined, {
+                    style: 'currency',
+                    currency: 'USD', // Replace with the appropriate currency code
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(product.MSRP__c * product.Quantity__c),
+                isSelected: false,
+                rowClass: 'slds-hint-parent'
             }));
         } else if (error) {
             this.showErrorToast('Error Fetching Products', error.body.message);
@@ -159,11 +206,21 @@ export default class Order extends LightningElement {
             .catch(error => {
                 this.showErrorToast('Error Deleting Products', error.body.message);
             });
+        this.showDialog = false;
     }
 
     handleQuantityChange(event) {
         const updatedItem = this.products.find(product => product.Id === event.target.name);
         updatedItem.Quantity__c = event.target.value;
+    
+        // Update the subtotal for the updated item
+        updatedItem.subtotal = Intl.NumberFormat(undefined, {
+            style: 'currency',
+            currency: 'USD', // Replace with the appropriate currency code
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(updatedItem.MSRP__c * updatedItem.Quantity__c);
+    
         this.totalPrice = this.selectedProducts.reduce((total, product) => total + (product.MSRP__c * product.Quantity__c), 0);
         this.totalPrice = Intl.NumberFormat(undefined, {
             style: 'currency',
@@ -173,6 +230,7 @@ export default class Order extends LightningElement {
         }).format(parseFloat(this.totalPrice.toFixed(2)));
         this.delayedFireFilterChangeEvent(updatedItem);
     }
+    
 
     handleCheckout() {
         publish(this.messageContext, CHECKOUT_MESSAGE_CHANNEL, {
@@ -327,7 +385,7 @@ export default class Order extends LightningElement {
     }
 
     get nextButtonLabel() {
-        return this.isStep1 ? 'Checkout' : 'Next';
+        return this.isStep1 ? 'Next' : this.isStep3 ? 'Checkout' : 'Next';
     }
 
     connectedCallback() {

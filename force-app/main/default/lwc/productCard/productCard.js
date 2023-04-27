@@ -25,6 +25,7 @@ import MATERIAL_FIELD from '@salesforce/schema/Product__c.Material__c';
 import FOPK_FIELD from '@salesforce/schema/Product__c.Fork__c';
 import FRONT_BRAKES_FIELD from '@salesforce/schema/Product__c.Front_Brakes__c';
 import REAR_BRAKES_FIELD from '@salesforce/schema/Product__c.Rear_Brakes__c';
+import HTML from '@salesforce/schema/Product__c.HTML__c';
 
 /**
  * Component to display details of a Product__c.
@@ -41,6 +42,7 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
     forkField = FOPK_FIELD;
     frontBrakesField = FRONT_BRAKES_FIELD;
     rearBrakesField = REAR_BRAKES_FIELD;
+    richTextValue = HTML;
     productMSRP;
     // Id of Product__c to display
     recordId;
@@ -70,6 +72,7 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
         this.productName = getFieldValue(recordData, NAME_FIELD);
         this.productPictureUrl = getFieldValue(recordData, PICTURE_URL_FIELD);
         this.productMSRP = getFieldValue(recordData, MSRP_FIELD);
+        this.richTextValue = getFieldValue(recordData, HTML);
     }
 
     get formattedMSRP() {
@@ -114,6 +117,7 @@ export default class ProductCard extends NavigationMixin(LightningElement) {
                         variant: 'success'
                     })
                 );
+                console.log(richTextValue,999);
             })
             .catch((error) => {
                 this.dispatchEvent(

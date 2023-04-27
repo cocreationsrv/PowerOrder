@@ -73,3 +73,26 @@ table {
 .msrp-value {
   color: red;
 }
+
+.input-field-container {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 1rem;
+}
+
+.step2-input-field {
+  width: 100%;
+  max-width: 400px;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
